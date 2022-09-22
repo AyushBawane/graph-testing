@@ -4,14 +4,16 @@
 // the // GUI to perform specific functions.
 //
 
+
+
 class Search_Student {
 
     constructor(grid, config) {
-        
+
         this.config = config;       // search configuration object
-                                    //   config.actions = array of legal [x, y] actions
-                                    //   config.actionCosts[i] = cost of config.actions[i]
-                                    //   config.strategy = 'bfs' or 'dfs'
+        //   config.actions = array of legal [x, y] actions
+        //   config.actionCosts[i] = cost of config.actions[i]
+        //   config.strategy = 'bfs' or 'dfs'
 
         this.grid = grid;           // the grid we are using to search
         this.sx = -1;               // x location of the start state
@@ -27,7 +29,7 @@ class Search_Student {
         this.open = [];             // the current open list of the search (stores Nodes)
         this.closed = [];           // the current closed list of the search
     }
-    
+
     // Student TODO: Implement this function
     //
     // This function should set up all the necessary data structures to begin a new search
@@ -75,10 +77,12 @@ class Search_Student {
         let nx = x + action[0];
         let ny = y + action[1];
 
+        if (this.grid.isOOB(nx, ny)) return false;
+        if (this.grid.get(x, y)) return false;
         // 1. create nx, ny (new location after action perform)
         // 2. if this.grid.isOOB(nx,ny) then return false
         // 3. if this.grid.get(x,y) not same as this.grid.get(nx,ny) return false
-                                     
+
         return true;
     }
 
@@ -119,19 +123,30 @@ class Search_Student {
 
         // if we've already finished the search, do nothing
         if (!this.inProgress) { return; }
-                                     
+
+
+        let startX = this.sx, startY = this.sy;
+        let endX = this.gx, endY = this.gy;
         // compute an L-shaped path in a single step (you must replace this)
+        console.log("sx,sy=" + startX + " " + startY);
+        console.log("ex,ey=" + endX + " " + endY);
         var dx = (this.gx - this.sx) > 0 ? 1 : -1;
         var dy = (this.gy - this.sy) > 0 ? 1 : -1;
-        for (var x=0; x < Math.abs(this.gx-this.sx); x++) { this.path.push([dx, 0]); }
-        for (var y=0; y < Math.abs(this.gy-this.sy); y++) { this.path.push([0, dy]); }
-        
+        for (var x = 0; x < Math.abs(this.gx - this.sx); x++) {
+            console.log(this.isLegalAction(startX, endX, [dx, 0]));
+            this.path.push([dx, 0]);
+        }
+        for (var y = 0; y < Math.abs(this.gy - this.sy); y++) {
+            this.path.push([0, dy]);
+        }
+        console.log(dx, dy);
         // check to see which algorithm you should be implementing
+
         if (this.config.strategy == 'bfs') {
             // do breadth-first-search
         } else if (this.config.strategy == 'dfs') {
             // do depth-first-search
-        } 
+        }
 
         // note: do not duplicate all of your BFS / DFS code in the if-statement above
         //       you should only include what is different between the two algorithms
@@ -143,7 +158,8 @@ class Search_Student {
         // we found a path, so set inProgress to false
         this.inProgress = false;
     }
-                                     
+
+    
     // Student TODO: Implement this function
     //
     // This function returns the current open list states in a given format. This exists as
