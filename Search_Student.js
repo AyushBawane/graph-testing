@@ -128,22 +128,12 @@ class Search_Student {
         let startX = this.sx, startY = this.sy;
         let endX = this.gx, endY = this.gy;
         // compute an L-shaped path in a single step (you must replace this)
-        console.log("sx,sy=" + startX + " " + startY);
-        console.log("ex,ey=" + endX + " " + endY);
-        var dx = (this.gx - this.sx) > 0 ? 1 : -1;
-        var dy = (this.gy - this.sy) > 0 ? 1 : -1;
-        for (var x = 0; x < Math.abs(this.gx - this.sx); x++) {
-            console.log(this.isLegalAction(startX, endX, [dx, 0]));
-            this.path.push([dx, 0]);
-        }
-        for (var y = 0; y < Math.abs(this.gy - this.sy); y++) {
-            this.path.push([0, dy]);
-        }
-        console.log(dx, dy);
+        
         // check to see which algorithm you should be implementing
-
+        
         if (this.config.strategy == 'bfs') {
-            // do breadth-first-search
+        //    this portion is yet to be coded
+            
         } else if (this.config.strategy == 'dfs') {
             // do depth-first-search
         }
@@ -159,7 +149,7 @@ class Search_Student {
         this.inProgress = false;
     }
 
-    
+
     // Student TODO: Implement this function
     //
     // This function returns the current open list states in a given format. This exists as

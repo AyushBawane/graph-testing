@@ -1,49 +1,52 @@
-var matrix = [
-    [0, 1, 0, 1, 0],
-    [0, 0, 1, 0, 0],
-    [0, 0, 1, 1, 0],
-    [0, 0, 0, 0, 0],
-    [0, 1, 0, 1, 0]
-  ];
-  
-  var start = [4, 0];
-  var end = [3, 4];
-  
-  function findWay(position, end) {
-    var queue = [];
-  
-    matrix[position[0]][position[1]] = 1;
-    queue.push([position]); // store a path, not just a position
-  
-    while (queue.length > 0) {
-      var path = queue.shift(); // get the path out of the queue
-      var pos = path[path.length-1]; // ... and then the last position from it
-      var direction = [
-        [pos[0] + 1, pos[1]],
-        [pos[0], pos[1] + 1],
-        [pos[0] - 1, pos[1]],
-        [pos[0], pos[1] - 1]
-      ];
-  
-      for (var i = 0; i < direction.length; i++) {
-        // Perform this check first:
-        if (direction[i][0] == end[0] && direction[i][1] == end[1]) {
-          // return the path that led to the find
-          return path.concat([end]); 
-        }
-        
-        if (direction[i][0] < 0 || direction[i][0] >= matrix.length 
-            || direction[i][1] < 0 || direction[i][1] >= matrix[0].length 
-            || matrix[direction[i][0]][direction[i][1]] != 0) { 
-          continue;
-        }
-  
-        matrix[direction[i][0]][direction[i][1]] = 1;
-        // extend and push the path on the queue
-        queue.push(path.concat([direction[i]])); 
+// the below code performs BFS search and returns the result array
+
+
+
+var shortestPathBinaryMatrix = function(grid) {
+  if(grid[0][0] != 0) return []; // modify return type
+  const queue = [[[0,0], 1]];
+  const dest = [1,3];
+  const visited = new Map();
+  visited.set([0,0].toString(), null); // Mark source as visited
+
+  const getNextSteps = ([x,y]) => {
+      const dirs = [[1, 0], [-1, 0] , [0,1], [0,-1]];
+      const nextSteps = [];
+      for(const [nx, ny] of dirs) {
+          if(grid[x + nx]?.[y + ny] == 0) nextSteps.push([x + nx, y + ny]);
       }
-    }
+      return nextSteps;
   }
   
-  var path = findWay(start, end);
-  console.log(JSON.stringify(path));
+  for (let [curr, distance] of queue) {
+      // Move the visited check to the loop
+      if (curr[0] === dest[0] && curr[1] === dest[1] && grid[dest[0]][dest[1]] == 0) {
+          // Derive the path from the linked list we now have in the visited structure:
+          let path = [];
+          while (curr) {
+              path.push(curr);
+              curr = visited.get(curr.toString());
+          }
+          return path.reverse(); // Need to reverse to get from source to destination
+      }
+      for (let adj of getNextSteps(curr)) {
+          // Visited-check moved here:
+          if (visited.has(adj.toString())) continue; 
+          // Mark with the coordinates of the previous node on the path:
+          visited.set(adj.toString(), curr);
+          queue.push([adj, distance + 1]);
+      }
+  }
+  
+  return []; // must modify this as well
+};
+
+// demo
+let grid = [
+  [0,0,0,1],
+  [1,1,0,0],
+  [1,1,0,1]
+];
+let result = shortestPathBinaryMatrix(grid);
+// just calculate the length of the result and multiply by 100 to get the total cost
+console.log(result);
